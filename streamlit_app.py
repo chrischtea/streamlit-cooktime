@@ -41,7 +41,7 @@ try:
 
     selected = st.pills(
         "Select two or more items", 
-        data["item"].tolist(),
+        sorted(data["item"].tolist()),
         selection_mode="multi"
     )
 
