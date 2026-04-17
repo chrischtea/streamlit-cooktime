@@ -39,12 +39,10 @@ try:
         st.error("The CSV needs at least two usable columns: item name and cooking time.")
         st.stop()
 
-    st.subheader("Loaded data")
-    st.dataframe(data, use_container_width=True)
-
-    selected = st.multiselect(
-        "Select two or more items",
-        options=data["item"].tolist()
+    selected = st.pills(
+        "Select two or more items", 
+        data["item"].tolist(),
+        selection_mode="multi"
     )
 
     if len(selected) >= 2:
@@ -53,12 +51,11 @@ try:
 
         st.subheader("Load order")
         
-        # Calculate time to next item or finish
         times_to_next = []
         for i in range(len(selected_df)-1):
             time_to_next = selected_df.loc[i, "minutes"] - selected_df.loc[i+1, "minutes"]
             times_to_next.append(time_to_next)
-        times_to_next.append(selected_df.loc[len(selected_df)-1, "minutes"])  # Last: cook time
+        times_to_next.append(selected_df.loc[len(selected_df)-1, "minutes"])
         
         for i, item in enumerate(selected_df["item"]):
             st.markdown(f"**{item}:** {fmt_minutes(times_to_next[i])} minutes")
