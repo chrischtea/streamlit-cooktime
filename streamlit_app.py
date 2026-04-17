@@ -6,7 +6,7 @@ st.title("Air Fryer Scheduler")
 
 st.write("This app loads your item list from a CSV file on GitHub.")
 
-GITHUB_CSV_URL = "https://raw.githubusercontent.com/USERNAME/REPO/main/data.csv"
+GITHUB_CSV_URL = "https://raw.githubusercontent.com/chrischtea/streamlit-cooktime/refs/heads/main/data.csv"
 
 @st.cache_data
 def load_data(url):
