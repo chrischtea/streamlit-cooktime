@@ -57,25 +57,31 @@ try:
             
             if i == 0:
                 wait = 0
+                st.markdown(f"**{item}:** {fmt_minutes(wait)} minutes")
+            elif i == len(selected_df) - 1:
+                # Last item shows its cook time
+                cook_time = selected_df.loc[i, "minutes"]
+                st.markdown(f"**{item}:** {fmt_minutes(cook_time)} minutes")
             else:
+                # Middle items show wait time
                 prev_minutes = selected_df.loc[i - 1, "minutes"]
                 wait = prev_minutes - selected_df.loc[i, "minutes"]
-            
-            st.markdown(f"**{item}:** {fmt_minutes(wait)} minutes")
+                st.markdown(f"**{item}:** {fmt_minutes(wait)} minutes")
         
         st.subheader("Timing table")
         result = selected_df.copy()
-        result["wait_time"] = 0.0
-        for i in range(1, len(result)):
-            result.loc[i, "wait_time"] = result.loc[i-1, "minutes"] - result.loc[i, "minutes"]
+        result["display_time"] = 0.0
+        result.loc[0, "display_time"] = 0  # First: wait 0
+        for i in range(1, len(result)-1):
+            result.loc[i, "display_time"] = result.loc[i-1, "minutes"] - result.loc[i, "minutes"]  # Middle: wait
+        result.loc[len(result)-1, "display_time"] = result.loc[len(result)-1, "minutes"]  # Last: cook time
         
-        st.dataframe(result[["item", "minutes", "wait_time"]], use_container_width=True)
+        st.dataframe(result[["item", "minutes", "display_time"]], use_container_width=True)
         
-        # Verify all finish at max time
         max_time = result.loc[0, "minutes"]
         st.markdown(f"**All finish at {fmt_minutes(max_time)} minutes**")
 
-        csv = result[["item", "minutes", "wait_time"]].to_csv(index=False).encode("utf-8")
+        csv = result[["item", "minutes", "display_time"]].to_csv(index=False).encode("utf-8")
         st.download_button(
             label="Download schedule as CSV",
             data=csv,
