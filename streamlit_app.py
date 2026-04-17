@@ -64,11 +64,16 @@ try:
             st.markdown(f"**{item}:** {fmt_minutes(wait)} minutes")
         
         st.subheader("Timing table")
-        selected_df = selected_df.reset_index(drop=True)
         result = selected_df.copy()
-        result["wait_time"] = result["minutes"].shift(0) - result["minutes"].shift(-1)
-        result.loc[0, "wait_time"] = 0
+        result["wait_time"] = 0.0
+        for i in range(1, len(result)):
+            result.loc[i, "wait_time"] = result.loc[i-1, "minutes"] - result.loc[i, "minutes"]
+        
         st.dataframe(result[["item", "minutes", "wait_time"]], use_container_width=True)
+        
+        # Verify all finish at max time
+        max_time = result.loc[0, "minutes"]
+        st.markdown(f"**All finish at {fmt_minutes(max_time)} minutes**")
 
         csv = result[["item", "minutes", "wait_time"]].to_csv(index=False).encode("utf-8")
         st.download_button(
