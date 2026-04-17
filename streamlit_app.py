@@ -51,41 +51,26 @@ try:
         selected_df = data[data["item"].isin(selected)].copy()
         selected_df = selected_df.sort_values(["minutes", "item"], ascending=[False, True]).reset_index(drop=True)
 
-        rows = []
+        st.subheader("Load order")
         for i in range(len(selected_df)):
             item = selected_df.loc[i, "item"]
-            minutes = selected_df.loc[i, "minutes"]
-
+            
             if i == 0:
                 wait = 0
             else:
                 prev_minutes = selected_df.loc[i - 1, "minutes"]
-                wait = prev_minutes - minutes
-
-            rows.append({
-                "order": i + 1,
-                "item": item,
-                "minutes": minutes,
-                "wait_before_this_item": wait
-            })
-
-        result = pd.DataFrame(rows)
-
-        st.subheader("Cooking order")
-        for i, row in result.iterrows():
-            if i == 0:
-                st.markdown(
-                    f"{row['order']}. Put in {row['item']} and cook for {fmt_minutes(row['minutes'])} minutes."
-                )
-            else:
-                st.markdown(
-                    f"{row['order']}. Wait {fmt_minutes(row['wait_before_this_item'])} minutes, then put in {row['item']} and cook for {fmt_minutes(row['minutes'])} minutes."
-                )
-
+                wait = prev_minutes - selected_df.loc[i, "minutes"]
+            
+            st.markdown(f"**{item}:** {fmt_minutes(wait)} minutes")
+        
         st.subheader("Timing table")
-        st.dataframe(result, use_container_width=True)
+        selected_df = selected_df.reset_index(drop=True)
+        result = selected_df.copy()
+        result["wait_time"] = result["minutes"].shift(0) - result["minutes"].shift(-1)
+        result.loc[0, "wait_time"] = 0
+        st.dataframe(result[["item", "minutes", "wait_time"]], use_container_width=True)
 
-        csv = result.to_csv(index=False).encode("utf-8")
+        csv = result[["item", "minutes", "wait_time"]].to_csv(index=False).encode("utf-8")
         st.download_button(
             label="Download schedule as CSV",
             data=csv,
