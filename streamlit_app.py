@@ -52,36 +52,26 @@ try:
         selected_df = selected_df.sort_values(["minutes", "item"], ascending=[False, True]).reset_index(drop=True)
 
         st.subheader("Load order")
-        for i in range(len(selected_df)):
-            item = selected_df.loc[i, "item"]
-            
-            if i == 0:
-                wait = 0
-                st.markdown(f"**{item}:** {fmt_minutes(wait)} minutes")
-            elif i == len(selected_df) - 1:
-                # Last item shows its cook time
-                cook_time = selected_df.loc[i, "minutes"]
-                st.markdown(f"**{item}:** {fmt_minutes(cook_time)} minutes")
-            else:
-                # Middle items show wait time
-                prev_minutes = selected_df.loc[i - 1, "minutes"]
-                wait = prev_minutes - selected_df.loc[i, "minutes"]
-                st.markdown(f"**{item}:** {fmt_minutes(wait)} minutes")
         
+        # Calculate time to next item or finish
+        times_to_next = []
+        for i in range(len(selected_df)-1):
+            time_to_next = selected_df.loc[i, "minutes"] - selected_df.loc[i+1, "minutes"]
+            times_to_next.append(time_to_next)
+        times_to_next.append(selected_df.loc[len(selected_df)-1, "minutes"])  # Last: cook time
+        
+        for i, item in enumerate(selected_df["item"]):
+            st.markdown(f"**{item}:** {fmt_minutes(times_to_next[i])} minutes")
+
         st.subheader("Timing table")
         result = selected_df.copy()
-        result["display_time"] = 0.0
-        result.loc[0, "display_time"] = 0  # First: wait 0
-        for i in range(1, len(result)-1):
-            result.loc[i, "display_time"] = result.loc[i-1, "minutes"] - result.loc[i, "minutes"]  # Middle: wait
-        result.loc[len(result)-1, "display_time"] = result.loc[len(result)-1, "minutes"]  # Last: cook time
+        result["time_to_next"] = times_to_next
+        st.dataframe(result[["item", "minutes", "time_to_next"]], use_container_width=True)
         
-        st.dataframe(result[["item", "minutes", "display_time"]], use_container_width=True)
-        
-        max_time = result.loc[0, "minutes"]
+        max_time = selected_df.loc[0, "minutes"]
         st.markdown(f"**All finish at {fmt_minutes(max_time)} minutes**")
 
-        csv = result[["item", "minutes", "display_time"]].to_csv(index=False).encode("utf-8")
+        csv = result[["item", "minutes", "time_to_next"]].to_csv(index=False).encode("utf-8")
         st.download_button(
             label="Download schedule as CSV",
             data=csv,
