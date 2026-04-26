@@ -14,15 +14,19 @@ def load_data(url):
 
 def normalize_columns(df):
     cols = list(df.columns)
-    if len(cols) < 2:
+    if len(cols) < 3:
         return None
 
-    out = df[[cols[0], cols[1]]].copy()
-    out.columns = ["item", "minutes"]
+    out = df[[cols[0], cols[1], cols[2]]].copy()
+    out.columns = ["item", "minutes", "status"]
+
     out["item"] = out["item"].astype(str).str.strip()
     out["minutes"] = pd.to_numeric(out["minutes"], errors="coerce")
-    out = out.dropna(subset=["item", "minutes"])
+    out["status"] = out["status"].astype(str).str.strip().str.lower()
+
+    out = out.dropna(subset=["item", "minutes", "status"])
     out = out[out["item"] != ""]
+    out = out[out["status"] == "x"]
     out["minutes"] = out["minutes"].astype(float)
     return out
 
@@ -36,11 +40,11 @@ try:
     data = normalize_columns(df)
 
     if data is None or data.empty:
-        st.error("The CSV needs at least two usable columns: item name and cooking time.")
+        st.error("The CSV needs at least three usable columns: item name, cooking time, and status.")
         st.stop()
 
     selected = st.pills(
-        "Select two or more items", 
+        "Select two or more items",
         sorted(data["item"].tolist()),
         selection_mode="multi"
     )
@@ -50,13 +54,13 @@ try:
         selected_df = selected_df.sort_values(["minutes", "item"], ascending=[False, True]).reset_index(drop=True)
 
         st.subheader("Load order")
-        
+
         times_to_next = []
-        for i in range(len(selected_df)-1):
-            time_to_next = selected_df.loc[i, "minutes"] - selected_df.loc[i+1, "minutes"]
+        for i in range(len(selected_df) - 1):
+            time_to_next = selected_df.loc[i, "minutes"] - selected_df.loc[i + 1, "minutes"]
             times_to_next.append(time_to_next)
-        times_to_next.append(selected_df.loc[len(selected_df)-1, "minutes"])
-        
+        times_to_next.append(selected_df.loc[len(selected_df) - 1, "minutes"])
+
         for i, item in enumerate(selected_df["item"]):
             st.markdown(f"**{item}:** {fmt_minutes(times_to_next[i])} minutes")
 
@@ -64,7 +68,7 @@ try:
         result = selected_df.copy()
         result["time_to_next"] = times_to_next
         st.dataframe(result[["item", "minutes", "time_to_next"]], use_container_width=True)
-        
+
         max_time = selected_df.loc[0, "minutes"]
         st.markdown(f"**All finish at {fmt_minutes(max_time)} minutes**")
 
