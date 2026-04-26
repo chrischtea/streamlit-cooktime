@@ -18,14 +18,14 @@ def normalize_columns(df):
         return None
 
     out = df[[cols[0], cols[1], cols[2]]].copy()
-    out.columns = ["Produkt", "Dauer", "Status"]
+    out.columns = ["Produkt", "minutes", "Status"]
 
-    out["item"] = out["item"].astype(str).str.strip()
+    out["Produkt"] = out["Produkt"].astype(str).str.strip()
     out["minutes"] = pd.to_numeric(out["minutes"], errors="coerce")
     out["status"] = out["status"].astype(str).str.strip().str.lower()
 
-    out = out.dropna(subset=["item", "minutes", "status"])
-    out = out[out["item"] != ""]
+    out = out.dropna(subset=["Produkt", "minutes", "status"])
+    out = out[out["Produkt"] != ""]
     out = out[out["status"] == "x"]
     out["minutes"] = out["minutes"].astype(float)
     return out
@@ -45,13 +45,13 @@ try:
 
     selected = st.pills(
         "Select two or more items",
-        sorted(data["item"].tolist()),
+        sorted(data["Produkt"].tolist()),
         selection_mode="multi"
     )
 
     if len(selected) >= 2:
-        selected_df = data[data["item"].isin(selected)].copy()
-        selected_df = selected_df.sort_values(["minutes", "item"], ascending=[False, True]).reset_index(drop=True)
+        selected_df = data[data["Produkt"].isin(selected)].copy()
+        selected_df = selected_df.sort_values(["minutes", "Produkt"], ascending=[False, True]).reset_index(drop=True)
 
         st.subheader("Load order")
 
@@ -61,18 +61,18 @@ try:
             times_to_next.append(time_to_next)
         times_to_next.append(selected_df.loc[len(selected_df) - 1, "minutes"])
 
-        for i, item in enumerate(selected_df["item"]):
+        for i, item in enumerate(selected_df["Produkt"]):
             st.markdown(f"**{item}:** {fmt_minutes(times_to_next[i])} minutes")
 
         st.subheader("Timing table")
         result = selected_df.copy()
         result["time_to_next"] = times_to_next
-        st.dataframe(result[["item", "minutes", "time_to_next"]], use_container_width=True)
+        st.dataframe(result[["Produkt", "minutes", "time_to_next"]], use_container_width=True)
 
         max_time = selected_df.loc[0, "minutes"]
         st.markdown(f"**All finish at {fmt_minutes(max_time)} minutes**")
 
-        csv = result[["item", "minutes", "time_to_next"]].to_csv(index=False).encode("utf-8")
+        csv = result[["Produkt", "minutes", "time_to_next"]].to_csv(index=False).encode("utf-8")
         st.download_button(
             label="Download schedule as CSV",
             data=csv,
