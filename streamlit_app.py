@@ -10,21 +10,28 @@ GITHUB_CSV_URL = "https://raw.githubusercontent.com/chrischtea/streamlit-cooktim
 
 @st.cache_data
 def load_data(url):
-    return pd.read_csv(url)
+    return pd.read_csv(url, encoding="utf-8-sig")
 
 def normalize_columns(df):
-    cols = [c.strip().lower() for c in df.columns]
+    df = df.copy()
+    df.columns = df.columns.map(lambda x: str(x).strip().lower())
 
     col_map = {}
-    for original, lower in zip(df.columns, cols):
-        if lower in ["item", "produkt"]:
-            col_map["item"] = original
-        elif lower in ["minutes", "dauer"]:
-            col_map["minutes"] = original
-        elif lower in ["status"]:
-            col_map["status"] = original
+    if "produkt" in df.columns:
+        col_map["item"] = "produkt"
+    elif "item" in df.columns:
+        col_map["item"] = "item"
+
+    if "dauer" in df.columns:
+        col_map["minutes"] = "dauer"
+    elif "minutes" in df.columns:
+        col_map["minutes"] = "minutes"
+
+    if "status" in df.columns:
+        col_map["status"] = "status"
 
     if not {"item", "minutes", "status"}.issubset(col_map):
+        st.write("Detected columns:", list(df.columns))
         return None
 
     out = df[[col_map["item"], col_map["minutes"], col_map["status"]]].copy()
@@ -47,14 +54,15 @@ def fmt_minutes(x):
 
 try:
     df = load_data(GITHUB_CSV_URL)
+    st.write("Raw columns:", list(df.columns))
     data = normalize_columns(df)
 
     if data is None:
-        st.error("The CSV needs these columns: Produkt, Dauer, Status.")
+        st.error("The CSV must contain Produkt, Dauer, and Status columns.")
         st.stop()
 
     if data.empty:
-        st.info("No active items found. Only rows with Status = 'x' are shown.")
+        st.info("No active items found. Only rows with Status = x are shown.")
         st.stop()
 
     selected = st.pills(
