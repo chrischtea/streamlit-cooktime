@@ -18,7 +18,7 @@ def normalize_columns(df):
         return None
 
     out = df[[cols[0], cols[1], cols[2]]].copy()
-    out.columns = ["item", "minutes", "status"]
+    out.columns = ["Produkt", "Dauer", "Status"]
 
     out["item"] = out["item"].astype(str).str.strip()
     out["minutes"] = pd.to_numeric(out["minutes"], errors="coerce")
