@@ -31,7 +31,6 @@ def normalize_columns(df):
         col_map["status"] = "status"
 
     if not {"item", "minutes", "status"}.issubset(col_map):
-        st.write("Detected columns:", list(df.columns))
         return None
 
     out = df[[col_map["item"], col_map["minutes"], col_map["status"]]].copy()
@@ -54,7 +53,6 @@ def fmt_minutes(x):
 
 try:
     df = load_data(GITHUB_CSV_URL)
-    st.write("Raw columns:", list(df.columns))
     data = normalize_columns(df)
 
     if data is None:
