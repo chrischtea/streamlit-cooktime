@@ -1,48 +1,48 @@
-Produkt,Dauer
-12 chicken nuggets,11
-American Style chicken drumsticks,16
-Bifteki,10
-Bofrost Croissant,20
-Buffalo chick‘n’Wing,15
-Camembert bites,8
-Camembert Donuts,4
-Cheddar cheese Jalapeños,6
-Corny Dogs,8
-Edeka Bio chick nugg Backteig,12
-Edeka Blätterteig Minis,15
-Edeka cheese Nuggets,10
-Edeka curly fries,12
-Edeka Festtagskroketten,10
-Edeka Grid Fries,13
-Edeka Herzogin,10
-Edeka Kartoffeltaschen,12
-Edeka Kartoffeltaschen lang,14
-Edeka Mini backkäse,7
-Eissmann drumsticks,20
-Eissmann mini calzones,15
-G&G mozz sticks,6
-G+G Chicken wings,13
-G+G frischkäse jalapeños,8
-G+G Grid Fries,10
-Gyoza chicken,7
-Gyoza kimchi chicken,5
-Hähnchen-Fries,5
-Halloween Monster Nuggets,6
-Iglo chicken nuggets cheese,13
-Iglo fischtäbchen,13
-K-Asia Frühlingsrollen Huhn,15
-K-Classic Chili cheese Nuggets,7
-K-Classic frischkäse jalapeños,8
-Landküche Indian chicken sticks,14
-Lutz chicken Nuggets,8
-McCain ChefFries,13
-McCain Crispers,10
-McCain Pickers cheese triangles,7
-McCain Pickers Italian/ChiCheNugg,7
-McCain Smiles,9
-Pickers cheese Donuts,7
-Potato wedges,8
-Rösti-Sticks,13
-Schär chicken fingers,11
-SnackMaster Potato Pockets,7
-Yummy mozzarella sticks,4
+Produkt,Dauer,Status
+12 chicken nuggets,11,a
+American Style chicken drumsticks,16,a
+Bifteki,10,a
+Bofrost Croissant,20,a
+Buffalo chick‘n’Wing,15,a
+Camembert bites,8,a
+Camembert Donuts,4,a
+Cheddar cheese Jalapeños,6,a
+Corny Dogs,8,a
+Edeka Bio chick nugg Backteig,12,a
+Edeka Blätterteig Minis,15,a
+Edeka cheese Nuggets,10,a
+Edeka curly fries,12,a
+Edeka Festtagskroketten,10,a
+Edeka Grid Fries,13,a
+Edeka Herzogin,10,x
+Edeka Kartoffeltaschen,12,x
+Edeka Kartoffeltaschen lang,14,a
+Edeka Mini backkäse,7,x
+Eissmann drumsticks,20,a
+Eissmann mini calzones,15,a
+G&G mozz sticks,6,a
+G+G Chicken wings,13,a
+G+G frischkäse jalapeños,8,a
+G+G Grid Fries,10,a
+Gyoza chicken,7,a
+Gyoza kimchi chicken,5,a
+Hähnchen-Fries,5,a
+Halloween Monster Nuggets,6,a
+Iglo chicken nuggets cheese,12,x
+Iglo fischtäbchen,13,a
+K-Asia Frühlingsrollen Huhn,15,a
+K-Classic Chili cheese Nuggets,7,a
+K-Classic frischkäse jalapeños,8,a
+Landküche Indian chicken sticks,14,a
+Lutz chicken Nuggets,8,a
+McCain ChefFries,13,a
+McCain Crispers,10,a
+McCain Pickers cheese triangles,7,a
+McCain Pickers Italian/ChiCheNugg,7,a
+McCain Smiles,9,a
+Pickers cheese Donuts,7,a
+Potato wedges,8,a
+Rösti-Sticks,13,a
+Schär chicken fingers,11,a
+SnackMaster Potato Pockets,7,a
+Yummy mozzarella sticks,4,a
