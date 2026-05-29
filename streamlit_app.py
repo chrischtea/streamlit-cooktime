@@ -82,7 +82,7 @@ try:
         times_to_next.append(selected_df.loc[len(selected_df) - 1, "minutes"])
 
         for i, item in enumerate(selected_df["item"]):
-            st.markdown(f"**{item}:** {fmt_minutes(times_to_next[i])} minutes")
+            st.markdown(f"**{item}**\n{fmt_minutes(times_to_next[i])} minutes")
 
         st.subheader("Timing table")
         result = selected_df.copy()
